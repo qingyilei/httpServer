@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(http-server)
+project(httpServer)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -18,9 +18,10 @@ else ()
     message(FATAL_ERROR "Boost not found")
 endif ()
 
+
 add_executable(${PROJECT_NAME} src/main.cpp
-        src/request_parser.cpp
-        src/http_server.cpp
+        src/http/request_parser.cpp
+        src/http/http_server.cpp
         src/database/connection_pool.cpp
         src/database/database.cpp
         src/model/user_traits.cpp

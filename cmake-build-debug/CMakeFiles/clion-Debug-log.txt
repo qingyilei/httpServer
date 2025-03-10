@@ -1,5 +1,5 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/aarch64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/aarch64/ninja -G Ninja -S /Users/a1-6/c_project/http-server -B /Users/a1-6/c_project/http-server/cmake-build-debug
+/Applications/CLion.app/Contents/bin/cmake/mac/aarch64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/aarch64/ninja -G Ninja -S /Users/a1-6/CLionProjects/httpServer -B /Users/a1-6/CLionProjects/httpServer/cmake-build-debug
 -- Boost found: 1.87.0
 -- Configuring done (0.0s)
 -- Generating done (0.0s)
--- Build files have been written to: /Users/a1-6/c_project/http-server/cmake-build-debug
+-- Build files have been written to: /Users/a1-6/CLionProjects/httpServer/cmake-build-debug
