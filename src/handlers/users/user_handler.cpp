@@ -18,7 +18,7 @@ UserHandler::UserHandler() {
 
 
 std::string UserHandler::handle(const HttpRequest &req) {
-    User::register_fields();
+
     // 示例：处理查询参数
     std::string operatorStr = req.domainOperator.second;
     if (auto it = operators_.find(operatorStr); it != operators_.end()) {

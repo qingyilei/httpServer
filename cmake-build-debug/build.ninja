@@ -145,6 +145,14 @@ build CMakeFiles/httpServer.dir/src/handlers/users/user_delete_handler.cpp.o: CX
   OBJECT_DIR = CMakeFiles/httpServer.dir
   OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/handlers/users
 
+build CMakeFiles/httpServer.dir/src/register/register_center.cpp.o: CXX_COMPILER__httpServer_unscanned_Debug /Users/a1-6/CLionProjects/httpServer/src/register/register_center.cpp || cmake_object_order_depends_target_httpServer
+  DEFINES = -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB
+  DEP_FILE = CMakeFiles/httpServer.dir/src/register/register_center.cpp.o.d
+  FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk -fcolor-diagnostics
+  INCLUDES = -I/Users/a1-6/CLionProjects/httpServer/include -isystem /opt/homebrew/include
+  OBJECT_DIR = CMakeFiles/httpServer.dir
+  OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/register
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target httpServer
@@ -153,7 +161,7 @@ build CMakeFiles/httpServer.dir/src/handlers/users/user_delete_handler.cpp.o: CX
 #############################################
 # Link the executable httpServer
 
-build httpServer: CXX_EXECUTABLE_LINKER__httpServer_Debug CMakeFiles/httpServer.dir/src/main.cpp.o CMakeFiles/httpServer.dir/src/http/request_parser.cpp.o CMakeFiles/httpServer.dir/src/http/http_server.cpp.o CMakeFiles/httpServer.dir/src/database/connection_pool.cpp.o CMakeFiles/httpServer.dir/src/database/database.cpp.o CMakeFiles/httpServer.dir/src/model/user_traits.cpp.o CMakeFiles/httpServer.dir/src/model/user.cpp.o CMakeFiles/httpServer.dir/src/handlers/users/user_handler.cpp.o CMakeFiles/httpServer.dir/src/handlers/users/user_query_handler.cpp.o CMakeFiles/httpServer.dir/src/handlers/users/user_create_handler.cpp.o CMakeFiles/httpServer.dir/src/handlers/users/user_update_handler.cpp.o CMakeFiles/httpServer.dir/src/handlers/users/user_delete_handler.cpp.o | /opt/homebrew/lib/libboost_json.dylib /opt/homebrew/lib/libboost_system.dylib /opt/homebrew/lib/libboost_container.dylib
+build httpServer: CXX_EXECUTABLE_LINKER__httpServer_Debug CMakeFiles/httpServer.dir/src/main.cpp.o CMakeFiles/httpServer.dir/src/http/request_parser.cpp.o CMakeFiles/httpServer.dir/src/http/http_server.cpp.o CMakeFiles/httpServer.dir/src/database/connection_pool.cpp.o CMakeFiles/httpServer.dir/src/database/database.cpp.o CMakeFiles/httpServer.dir/src/model/user_traits.cpp.o CMakeFiles/httpServer.dir/src/model/user.cpp.o CMakeFiles/httpServer.dir/src/handlers/users/user_handler.cpp.o CMakeFiles/httpServer.dir/src/handlers/users/user_query_handler.cpp.o CMakeFiles/httpServer.dir/src/handlers/users/user_create_handler.cpp.o CMakeFiles/httpServer.dir/src/handlers/users/user_update_handler.cpp.o CMakeFiles/httpServer.dir/src/handlers/users/user_delete_handler.cpp.o CMakeFiles/httpServer.dir/src/register/register_center.cpp.o | /opt/homebrew/lib/libboost_json.dylib /opt/homebrew/lib/libboost_system.dylib /opt/homebrew/lib/libboost_container.dylib
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk
   LINK_LIBRARIES = /opt/homebrew/lib/libboost_json.dylib  /opt/homebrew/lib/libboost_system.dylib  -lpthread  -lsqlite3  /opt/homebrew/lib/libboost_container.dylib
   OBJECT_DIR = CMakeFiles/httpServer.dir

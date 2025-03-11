@@ -21,9 +21,7 @@ template<typename Model>
 class QueryBuilder {
 public:
 
-    explicit QueryBuilder(Model &model) : model_(model) {
-        this->page_size_ = 20;
-        this->page_ = 1;
+    explicit QueryBuilder(Model &model) : model_(model),page_size_(20),page_(1) {
     }
 
     // 新增方法：根据Model对象自动组装where条件

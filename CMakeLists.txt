@@ -33,6 +33,8 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/handlers/users/user_delete_handler.cpp
         include/stream/stream_container.h
         include/utils/convert_util.h
+        include/register/register_center.h
+        src/register/register_center.cpp
 
 )
 

@@ -67,10 +67,6 @@ public:
     std::any get_field(const std::string &name, Model &model) const {
         if (fields_.count(name) > 0) {
            return fields_.at(name).getter(model); // 需要确保key存在，否则抛出异常
-//            auto it = fields_.find(name);
-//            if (it != fields_.end()) {
-//                it->second.getter(model);
-//            }
         }
         return nullptr;
     }

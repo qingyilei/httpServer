@@ -13,7 +13,6 @@ std::string UserQueryHandler::handle(const HttpRequest &request) {
     std::string name = get_param(params, "name", std::string(""));
     std::string email = get_param(params, "email", std::string(""));
     User user(id, name, email, age);
-
     auto result = user.builder()
             .like_condition("name")
             .r_like_condition("email")
