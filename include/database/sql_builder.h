@@ -16,16 +16,108 @@
 #include "utils/convert_util.h"
 #include <sstream>
 #include <iostream>
+#include <numeric>
 
-template<typename Model>
-class QueryBuilder {
+std::string joinWith(std::vector<std::string> &processed, const std::string &delimiter) {
+
+    std::string joinLine = std::accumulate(std::ranges::begin(processed),
+                                             std::ranges::end(processed),
+                                             std::string{}, [delimiter](const std::string &a, const std::string &b) {
+                return a.empty() ? b : a + delimiter + b;
+            });
+    return joinLine;
+}
+
+
+class SqlWhere {
 public:
-
-    explicit QueryBuilder(Model &model) : model_(model),page_size_(20),page_(1) {
+    /**
+     * model traits table_name
+     * @param table
+     */
+    SqlWhere(std::vector<std::string> &condition) : sql_condition_(condition) {
+        std::cout << "SqlTable init" << std::endl;
     }
 
+    ~SqlWhere() {
+        std::cout << "SqlTable destroy" << std::endl;
+    }
+
+private:
+    std::vector<std::string> sql_condition_;
+};
+
+class SqlTable {
+public:
+    /**
+     * model traits table_name
+     * @param table
+     */
+    SqlTable(std::string &table) : sql_table_(table) {
+        std::cout << "SqlTable init" << std::endl;
+    }
+
+    ~SqlTable() {
+        std::cout << "SqlTable destroy" << std::endl;
+    }
+
+private:
+    std::string sql_table_;
+};
+
+template<class Model>
+class SqlField {
+public:
+    SqlField(std::vector<std::string> &fields) : fields_(fields) {
+        std::cout << "SqlField init" << std::endl;
+    }
+
+    SqlField &field(const std::string &field) {
+        this->fields_.push_back(field);
+        return *this;
+    }
+
+    ~SqlField() {
+        std::cout << "SqlFeild destroy" << std::endl;
+    }
+
+    std::unique_ptr<SqlTable> table() {
+        return std::make_unique<SqlTable>(ModelTraits<Model>::instance().table_name());
+    }
+
+    std::unique_ptr<SqlTable> table(const std::string &table) {
+        return std::make_unique<SqlTable>(table);
+    }
+
+
+private:
+    /**
+     * 1. select|update|delete
+     * 2. select or update fields
+     * 3. form table
+     * 4. where condition
+     */
+    std::vector<std::string> fields_;
+    std::vector<std::string> sql_vector_;
+};
+
+
+template<typename Model>
+class SqlBuilder {
+public:
+
+    explicit SqlBuilder(Model &model) : model_(model), page_size_(20), page_(1) {
+    }
+
+
+    SqlBuilder<Model> &where(const std::string &condition) {
+        where_clauses_.push_back(condition);
+        return *this;
+    }
+
+
     // 新增方法：根据Model对象自动组装where条件
-    QueryBuilder<Model> &where(const Model &model) {
+    SqlBuilder<Model> &where(const Model &model) {
         const auto &traits = ModelTraits<Model>::instance();
         for (const auto &[name, field]: traits.fields()) {
             auto value = model.get_field_value(name);
@@ -46,20 +138,20 @@ public:
         return *this;
     }
 
-    QueryBuilder<Model> &and_condition(const std::string &condition) {
+    SqlBuilder<Model> &and_condition(const std::string &condition) {
         where_clauses_.push_back(condition);
         return *this;
     }
 
     template<typename T>
-    QueryBuilder<Model> &eq_condition(const std::string &field) {
-        auto value = ModelTraits<Model>::instance().get_field(field,model_);
+    SqlBuilder<Model> &eq_condition(const std::string &field) {
+        auto value = ModelTraits<Model>::instance().get_field(field, model_);
         where_clauses_.push_back(std::format("{} = {}", field, std::any_cast<T>(value)));
         return *this;
     }
 
     template<typename T>
-    QueryBuilder<Model> &in_condition(const std::string &field, const std::vector<T> &in_vals) {
+    SqlBuilder<Model> &in_condition(const std::string &field, const std::vector<T> &in_vals) {
         std::string in_condition = vector_to_string(in_vals);
         if (in_condition.empty() || std::all_of(in_condition.begin(), in_condition.end(), ::isspace)) {
             return *this;
@@ -69,7 +161,7 @@ public:
     }
 
 
-    QueryBuilder<Model> &like_condition(const std::string &field) {
+    SqlBuilder<Model> &like_condition(const std::string &field) {
         auto val = ModelTraits<Model>::instance().get_field(field, model_);
         if (!val.has_value() || std::any_cast<std::string>(val).empty()) {
             return *this;
@@ -78,7 +170,7 @@ public:
         return *this;
     }
 
-    QueryBuilder<Model> &l_like_condition(const std::string &field) {
+    SqlBuilder<Model> &l_like_condition(const std::string &field) {
         auto val = ModelTraits<Model>::instance().get_field(field, model_);
         if (!val.has_value() || std::any_cast<std::string>(val).empty()) {
             return *this;
@@ -87,7 +179,7 @@ public:
         return *this;
     }
 
-    QueryBuilder<Model> &r_like_condition(const std::string &field) {
+    SqlBuilder<Model> &r_like_condition(const std::string &field) {
         auto val = ModelTraits<Model>::instance().get_field(field, model_);
         if (!val.has_value() || std::any_cast<std::string>(val).empty()) {
             return *this;
@@ -96,17 +188,17 @@ public:
         return *this;
     }
 
-    QueryBuilder<Model> &order_by(const std::string &column, bool ascending) {
+    SqlBuilder<Model> &order_by(const std::string &column, bool ascending) {
         order_ = "ORDER BY " + column + (ascending ? " ASC" : " DESC");
         return *this;
     }
 
-    QueryBuilder<Model> &page(int page) {
+    SqlBuilder<Model> &page(int page) {
         page_ = page;
         return *this;
     }
 
-    QueryBuilder<Model> &page_size(int size) {
+    SqlBuilder<Model> &page_size(int size) {
         page_size_ = size;
         return *this;
     }
@@ -135,7 +227,7 @@ public:
 
         const std::pair<std::string, std::string> query_count_sql = build_query();
         auto &db = Database::instance();
-        std::cout<<"cout sql;"<<query_count_sql.first<<std::endl;
+        std::cout << "cout sql;" << query_count_sql.first << std::endl;
         return db.query_count(query_count_sql.first);
 
     }
@@ -169,16 +261,15 @@ public:
     }
 
 private:
-    QueryBuilder<Model> &limit(int count) {
+    SqlBuilder<Model> &limit(int count) {
         limit_ = "LIMIT " + std::to_string(count);
         return *this;
     }
 
-    QueryBuilder<Model> &offset(int offset) {
+    SqlBuilder<Model> &offset(int offset) {
         offset_ = "OFFSET " + std::to_string(offset);
         return *this;
     }
-
 
 
     [[nodiscard]] std::string join_conditions() const {

@@ -97,12 +97,11 @@ public:
                 commit(conn);
                 pool_->release(conn);
                 return; // 补充一个无意义的返回值或调整模板逻辑
-            } else {
-                auto result = func(conn, std::forward<Args>(args)...); // 非void类型保存结果
-                commit(conn);
-                pool_->release(conn);
-                return result;
             }
+            auto result = func(conn, std::forward<Args>(args)...); // 非void类型保存结果
+            commit(conn);
+            pool_->release(conn);
+            return result;
         } catch (const std::exception &e) {
             rollback(conn);
             pool_->release(conn);
@@ -196,19 +195,19 @@ private:
                 case SQLITE_TEXT:
                     ModelTraits<Model>::instance().set_field(col_name, obj, std::string(
                             reinterpret_cast<const char *>(sqlite3_column_text(stmt, i))));
-
                     break;
                 case SQLITE_BLOB: {
-                    const uint8_t *blob_data = static_cast<const uint8_t *>(sqlite3_column_blob(stmt, i));
+                    const auto *blob_data = static_cast<const uint8_t *>(sqlite3_column_blob(stmt, i));
                     int blob_size = sqlite3_column_bytes(stmt, i);
                     ModelTraits<Model>::instance().set_field(col_name, obj,
                                                              std::vector<uint8_t>(blob_data, blob_data + blob_size));
-
                     break;
                 }
                 case SQLITE_NULL:
                     ModelTraits<Model>::instance().set_field(col_name, obj, nullptr);
                     break;
+                default:
+                    throw std::runtime_error("Unsupported column type");
             }
         }
         return obj;
@@ -256,7 +255,7 @@ private:
 
     // 绑定主键参数
     template<typename Model>
-    void bind_primary_key(sqlite3_stmt *stmt, const Model &obj) {
+    void bind_primary_key([[maybe_unused]] sqlite3_stmt *stmt, const Model &obj) {
         const auto &traits = ModelTraits<Model>::instance();
         auto pk_value = obj.get_field_value(traits.primary_key());
         std::visit([&](auto &&value) {
@@ -297,7 +296,6 @@ private:
         }
         return sqlite3_changes(sqlite3_db_handle(stmt));
     }
-
 };
 
 #endif // DATABASE_DATABASE_H

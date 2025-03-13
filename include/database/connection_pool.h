@@ -10,14 +10,12 @@
 #include <mutex>
 class ConnectionPool {
 public:
-    ConnectionPool(const std::string& db_path, size_t pool_size = 10);
+    explicit ConnectionPool(const std::string& db_path, size_t pool_size = 10);
 
     ~ConnectionPool();
 
     sqlite3* acquire();
     void release(sqlite3* conn);
-
-    std::string db_path() const;
 
 private:
     std::string db_path_;

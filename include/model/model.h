@@ -10,8 +10,13 @@
 #include <variant>
 #include <unordered_map>
 #include "database/database.h"
+#include "enums/message_level.h"
+#include "utils/stream_container.h"
 #include <iostream>
 #include "database/query_builder.h"
+#include <ranges>
+#include <format>
+#include <numeric>
 
 namespace json = boost::json;
 
@@ -44,14 +49,32 @@ public:
         fields_[field_name] = value;
     }
 
-    [[nodiscard]] virtual json::object to_json() const = 0;
+    virtual std::vector<std::pair<MessageLevel, std::string>> verify() = 0;
 
+    [[nodiscard]] virtual json::object to_json() const = 0;
 
     QueryBuilder<Derived> builder() {
         return QueryBuilder<Derived>(*static_cast<Derived *>(this));
     }
 
     void save() {
+        std::vector<std::pair<MessageLevel, std::string>> verify_result = this->verify();
+        if (!verify_result.empty()) {
+            auto processed = verify_result
+                             | std::views::filter([](const std::pair<MessageLevel, std::string> &u) { // 过滤条件
+                return u.first == MessageLevel::ERROR;
+            })
+                             | std::views::transform([](const std::pair<MessageLevel, std::string> &u) { // 转换操作
+                return u.second;
+            });
+            std::string errorLines = std::accumulate(std::ranges::begin(processed),
+                                                 std::ranges::end(processed),
+                                                 std::string{}, [](const std::string &a, const std::string &b) {
+                        return a.empty() ? b : a + "\n" + b;
+                    });
+            throw std::runtime_error(errorLines);
+        }
+
         auto &db = Database::instance();
         const std::string &id = ModelTraits<Derived>::instance().primary_key();
         int count = this->fields_.count(id);

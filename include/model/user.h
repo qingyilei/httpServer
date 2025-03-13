@@ -23,7 +23,7 @@ public:
     }
     User() = default;
 
-
+    std::vector<std::pair<MessageLevel,std::string>>  verify() override;
 
     int id;
     std::string name;
@@ -41,8 +41,8 @@ public:
         };
     }
 
-    template<typename T>
-    static void register_field(ModelTraits<User> &traits, const std::string &name, T User::* member);
+//    template<typename T>
+//    static void register_field(ModelTraits<User> &traits, const std::string &name, T User::* member);
 };
 
 

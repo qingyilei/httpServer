@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 project(httpServer)
 
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -20,21 +21,28 @@ endif ()
 
 
 add_executable(${PROJECT_NAME} src/main.cpp
+        include/utils/stream_container.h
+        include/utils/convert_util.h
         src/http/request_parser.cpp
         src/http/http_server.cpp
+        include/enums/message_level.h
         src/database/connection_pool.cpp
         src/database/database.cpp
-        src/model/user_traits.cpp
         src/model/user.cpp
-        src/handlers/users/user_handler.cpp
-        src/handlers/users/user_query_handler.cpp
-        src/handlers/users/user_create_handler.cpp
-        src/handlers/users/user_update_handler.cpp
-        src/handlers/users/user_delete_handler.cpp
-        include/stream/stream_container.h
-        include/utils/convert_util.h
+        src/model/order.cpp
+        src/handlers/user/user_handler.cpp
+        src/handlers/user/user_query_handler.cpp
+        src/handlers/user/user_create_handler.cpp
+        src/handlers/user/user_update_handler.cpp
+        src/handlers/user/user_delete_handler.cpp
+        src/handlers/order/order_handler.cpp
+        src/handlers/order/order_query_handler.cpp
+        src/handlers/order/order_create_handler.cpp
+        src/handlers/order/order_update_handler.cpp
+        src/handlers/order/order_delete_handler.cpp
         include/register/register_center.h
         src/register/register_center.cpp
+
 
 )
 

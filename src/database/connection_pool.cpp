@@ -2,7 +2,6 @@
 // Created by qing on 2025/3/5.
 //
 
-// src/database/ConnectionPool.cpp
 #include "database/connection_pool.h"
 #include <stdexcept>
 
@@ -24,10 +23,6 @@ sqlite3* ConnectionPool::acquire() {
     pool_.pop();
     return conn;
 }
-std::string ConnectionPool::db_path() const {
-    return db_path_;
-}
-
 void ConnectionPool::release(sqlite3* conn) {
     std::unique_lock lock(mutex_);
     pool_.push(conn);

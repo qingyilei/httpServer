@@ -41,7 +41,7 @@ private:
 };
 //
 //// 使用示例
-//users | as_stream()  // 自定义包装函数
+//user | as_stream()  // 自定义包装函数
 //    .filter([](auto&& u) { return u.age < 30; })
 //    .map([](auto&& u) { return u.name; })
 //    .forEach([](auto&& name) { std::cout << name << "\n"; });
@@ -57,14 +57,14 @@ private:
 //};
 //
 //int main() {
-//    std::vector<User> users{
+//    std::vector<User> user{
 //            {1, "Alice", 25},
 //            {2, "Bob", 30},
 //            {3, "Charlie", 20}
 //    };
 //
 //    // 流式处理管道
-//    auto processed = users
+//    auto processed = user
 //                     | std::views::filter([](const User& u) { // 过滤条件
 //        return u.age > 20; // 保留年龄>20的用户
 //    })

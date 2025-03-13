@@ -7,7 +7,7 @@ class Router {
 public:
     using Handler = std::function<std::string(const HttpRequest &)>;
 
-    Router add_route(const std::string& path, Handler handler) {
+    Router& add_route(const std::string& path, Handler handler) {
         routes_.emplace(path, std::move(handler));
         return *this;
     }

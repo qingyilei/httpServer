@@ -31,7 +31,7 @@ struct HttpRequest {
 
     // 获取 JSON 字段（模板方法）
     template<typename T>
-    T get_json_field(const std::string &key, T default_val = T()) const {
+    T request_body_field(const std::string &key, T default_val = T()) const {
         if (!body.is_object()) return default_val;
         auto it = body.as_object().find(key);
         if (it == body.as_object().end()) return default_val;

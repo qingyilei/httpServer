@@ -1,6 +1,7 @@
 #include "http/http_server.h"
 #include "handlers/user/user_handler.h"
 #include "register/register_center.h"
+#include "handlers/order//order_handler.h"
 
 
 int main() {
@@ -11,8 +12,12 @@ int main() {
         "user",
         [](const HttpRequest& req) {
             UserHandler userHandler;
-            return userHandler.handle(req);  // 修正拼写错误
-        });
+            return userHandler.handle(req);
+        }).add_route("order",
+                     [](const HttpRequest& req) {
+                         OrderHandler orderHandler;
+                         return orderHandler.handle(req);
+                     });
     server.start();
     return 0;
 }
