@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include "meta_data.h"
+#include <ranges>
 namespace json = boost::json;
 
 template<typename Model>
@@ -55,6 +56,15 @@ public:
         return sql;
     }
 
+    [[nodiscard]]
+     std::vector<std::string> model_fields() const {
+        std::vector<std::string> keys;
+        keys.reserve(fields_.size());
+        for (const auto& pair : fields_) {
+            keys.push_back(pair.first);
+        }
+        return keys;
+    }
 
 
     template<typename T>

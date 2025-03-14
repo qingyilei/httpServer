@@ -18,7 +18,7 @@ public:
     };
 
     // 添加分页元数据
-    QueryResult &with_metadata(Pagination meta) {
+    QueryResult<Model> &with_metadata(Pagination meta) {
         pagination_ = meta;
         return *this;
     }
@@ -26,8 +26,17 @@ public:
     QueryResult(std::vector<Model> data, Pagination pagination)
             : data_(std::move(data)), pagination_(pagination) {}
 
-    QueryResult(std::vector<Model> data)
+    explicit QueryResult(std::vector<Model> data)
             : data_(std::move(data)){}
+    QueryResult(const QueryResult& other)
+            : data_(other.data_),  // 深拷贝数据向量
+              pagination_(other.pagination_) {  // 拷贝分页元数据
+        // 构造函数体可留空，初始化列表已处理深拷贝
+    }
+    QueryResult(QueryResult&& other) noexcept
+            : data_(std::move(other.data_)),
+              pagination_(std::move(other.pagination_)) {}
+
 
     // 转换为JSON对象
     [[nodiscard]] boost::json::object to_json() const {
@@ -41,7 +50,7 @@ private:
     Pagination pagination_;
     std::vector<Model> data_;
 
-    boost::json::array serialize_data() const {
+    [[nodiscard]] boost::json::array serialize_data() const {
         boost::json::array arr;
         for (const auto &item: data_) {
             arr.push_back(item.to_json());
@@ -49,7 +58,7 @@ private:
         return arr;
     }
 
-    boost::json::object serialize_pagination() const {
+    [[nodiscard]] boost::json::object serialize_pagination() const {
         return {
                 {"current_page", pagination_.current_page},
                 {"page_size",    pagination_.page_size},

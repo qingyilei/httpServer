@@ -12,11 +12,8 @@ class OrderHandler : public Handler {
 public:
     OrderHandler();
     ~OrderHandler() override;
-
-    std::string handle(const HttpRequest &request) override;
-
-
-private:
-    std::unordered_map<std::string, std::shared_ptr<Handler>> operators_;
+    std::string handle(const HttpRequest &request) override {
+        return {""};
+    }
 };
 

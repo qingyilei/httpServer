@@ -10,21 +10,10 @@
 
 
 UserHandler::UserHandler() {
-    operators_.emplace("create", std::make_shared<UserCreateHandler>());
-    operators_.emplace("query", std::make_shared<UserQueryHandler>());
-    operators_.emplace("update", std::make_shared<UserUpdateHandler>());
-    operators_.emplace("delete", std::make_shared<UserDeleteHandler>());
-}
-
-
-std::string UserHandler::handle(const HttpRequest &req) {
-
-    // 示例：处理查询参数
-    std::string operatorStr = req.domainOperator.second;
-    if (auto it = operators_.find(operatorStr); it != operators_.end()) {
-        return it->second->handle(req);
-    }
-    return generate_404_response();
+    operators_.emplace("POST", std::make_shared<UserCreateHandler>());
+    operators_.emplace("GET", std::make_shared<UserQueryHandler>());
+    operators_.emplace("PUT", std::make_shared<UserUpdateHandler>());
+    operators_.emplace("DELETE", std::make_shared<UserDeleteHandler>());
 }
 
 UserHandler::~UserHandler() {

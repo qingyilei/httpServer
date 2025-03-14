@@ -5,9 +5,18 @@
 #include <sstream>
 
 class Handler {
+protected:
+    std::map<std::string, std::shared_ptr<Handler>> operators_;
 public:
     virtual ~Handler() = default;
     virtual std::string handle(const HttpRequest &request) = 0;
+    std::string process(const HttpRequest &req) {
+        if (auto it = operators_.find(req.method); it != operators_.end()) {
+            return it->second->handle(req);
+        }
+        return generate_404_response();
+    }
+
     static std::string generate_404_response() {
         return "HTTP/1.1 404 Not Found\r\n"
                "Content-Type: text/plain\r\n"
@@ -71,3 +80,5 @@ public:
         return ss.str();
     }
 };
+
+

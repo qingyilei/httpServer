@@ -57,7 +57,7 @@ public:
         return QueryBuilder<Derived>(*static_cast<Derived *>(this));
     }
 
-    void save() {
+    void process_verify() {
         std::vector<std::pair<MessageLevel, std::string>> verify_result = this->verify();
         if (!verify_result.empty()) {
             auto processed = verify_result
@@ -68,13 +68,15 @@ public:
                 return u.second;
             });
             std::string errorLines = std::accumulate(std::ranges::begin(processed),
-                                                 std::ranges::end(processed),
-                                                 std::string{}, [](const std::string &a, const std::string &b) {
+                                                     std::ranges::end(processed),
+                                                     std::string{}, [](const std::string &a, const std::string &b) {
                         return a.empty() ? b : a + "\n" + b;
                     });
             throw std::runtime_error(errorLines);
         }
-
+    }
+    void save() {
+        process_verify();
         auto &db = Database::instance();
         const std::string &id = ModelTraits<Derived>::instance().primary_key();
         int count = this->fields_.count(id);
@@ -83,6 +85,22 @@ public:
                                                          : db.update(*static_cast<Derived *>(this));
         this->set("id", saveId);
 
+    }
+    void save_sql() {
+        process_verify();
+        auto &db = Database::instance();
+        const std::string &id = ModelTraits<Derived>::instance().primary_key();
+        int count = this->fields_.count(id);
+        int saveId = (count == 0 || get<int>("id") == 0) ?
+                     db.insert(*static_cast<Derived *>(this))
+                                                         : db.update(*static_cast<Derived *>(this));
+        this->set("id", saveId);
+
+    }
+
+    int field_count_primary() {
+        const std::string &id = ModelTraits<Derived>::instance().primary_key();
+        return this->fields_.count(id);
     }
 
     void remove() {

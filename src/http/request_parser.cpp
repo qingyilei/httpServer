@@ -94,9 +94,9 @@ bool RequestParser::parsePath(HttpRequest &request) {
         ++operation_start;
     }
 
-    if (operation_start >= path.size()) {
-        throw std::invalid_argument("Invalid path: no operation found");
-    }
+//    if (operation_start >= path.size()) {
+//        throw std::invalid_argument("Invalid path: no operation found");
+//    }
 
     // 查找操作结束位置
     operation_end = path.find('/', operation_start);

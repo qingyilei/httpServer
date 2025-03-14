@@ -22,7 +22,7 @@ endif ()
 
 add_executable(${PROJECT_NAME} src/main.cpp
         include/utils/stream_container.h
-        include/utils/convert_util.h
+        include/utils/common_util.h
         src/http/request_parser.cpp
         src/http/http_server.cpp
         include/enums/message_level.h
@@ -42,6 +42,7 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/handlers/order/order_delete_handler.cpp
         include/register/register_center.h
         src/register/register_center.cpp
+        src/handlers/handler.cpp
 
 
 )

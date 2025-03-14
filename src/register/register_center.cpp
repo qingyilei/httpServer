@@ -14,3 +14,5 @@ RegisterCenter &RegisterCenter::instance() {
     static RegisterCenter instance;
     return instance;
 }
+
+

@@ -13,7 +13,7 @@
 #include "query_result.h"
 #include "database.h"
 #include "model/model_traits.h"
-#include "utils/convert_util.h"
+#include "utils/common_util.h"
 #include <sstream>
 #include <iostream>
 
@@ -31,14 +31,11 @@ public:
             auto value = model.get_field_value(name);
             std::visit([&](auto &&val) {
                 using T = std::decay_t<decltype(val)>;
-                if constexpr (std::is_same_v<T, int>) {
-                    where_clauses_.push_back(std::format("{} = {}", name, val));
-                } else if constexpr (std::is_same_v<T, double>) {
+                if constexpr (std::disjunction_v<std::is_same<T, int>, std::is_same<T, double>>) {
                     where_clauses_.push_back(std::format("{} = {}", name, val));
                 } else if constexpr (std::is_same_v<T, std::string>) {
                     where_clauses_.push_back(std::format("{} = '{}'", name, val));
                 } else if constexpr (std::is_same_v<T, std::vector<uint8_t>>) {
-                    // 对于二进制数据，暂时不支持直接比较
                     throw std::runtime_error("Unsupported type for where clause");
                 }
             }, value);
@@ -60,7 +57,7 @@ public:
 
     template<typename T>
     QueryBuilder<Model> &in_condition(const std::string &field, const std::vector<T> &in_vals) {
-        std::string in_condition = vector_to_string(in_vals);
+        std::string in_condition = CommonUtil::join_with_comma(in_vals);
         if (in_condition.empty() || std::all_of(in_condition.begin(), in_condition.end(), ::isspace)) {
             return *this;
         }
@@ -151,7 +148,7 @@ public:
 
 
         if (!where_clauses_.empty()) {
-            std::string join_str = " WHERE " + join_conditions();
+            std::string join_str = " WHERE " + where_conditions();
             count_sql += join_str;
             query_sql += join_str;
         }
@@ -181,7 +178,7 @@ private:
 
 
 
-    [[nodiscard]] std::string join_conditions() const {
+    [[nodiscard]] std::string where_conditions() const {
         std::string result;
         for (size_t i = 0; i < where_clauses_.size(); ++i) {
             if (i > 0) result += " AND ";

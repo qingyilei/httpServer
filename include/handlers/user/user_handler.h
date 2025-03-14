@@ -11,12 +11,12 @@ class UserHandler : public Handler {
 
 public:
     UserHandler();
+
     ~UserHandler() override;
 
-    std::string handle(const HttpRequest &request) override;
+    std::string handle(const HttpRequest &request) override {
+        return {""};
+    }
 
-
-private:
-    std::unordered_map<std::string, std::shared_ptr<Handler>> operators_;
 };
 
