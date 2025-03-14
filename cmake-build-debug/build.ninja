@@ -89,14 +89,6 @@ build CMakeFiles/httpServer.dir/src/database/database.cpp.o: CXX_COMPILER__httpS
   OBJECT_DIR = CMakeFiles/httpServer.dir
   OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/database
 
-build CMakeFiles/httpServer.dir/src/model/user_traits.cpp.o: CXX_COMPILER__httpServer_unscanned_Debug /Users/a1-6/CLionProjects/httpServer/src/model/user_traits.cpp || cmake_object_order_depends_target_httpServer
-  DEFINES = -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB
-  DEP_FILE = CMakeFiles/httpServer.dir/src/model/user_traits.cpp.o.d
-  FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk -fcolor-diagnostics
-  INCLUDES = -I/Users/a1-6/CLionProjects/httpServer/include -isystem /opt/homebrew/include
-  OBJECT_DIR = CMakeFiles/httpServer.dir
-  OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/model
-
 build CMakeFiles/httpServer.dir/src/model/user.cpp.o: CXX_COMPILER__httpServer_unscanned_Debug /Users/a1-6/CLionProjects/httpServer/src/model/user.cpp || cmake_object_order_depends_target_httpServer
   DEFINES = -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB
   DEP_FILE = CMakeFiles/httpServer.dir/src/model/user.cpp.o.d
@@ -105,45 +97,93 @@ build CMakeFiles/httpServer.dir/src/model/user.cpp.o: CXX_COMPILER__httpServer_u
   OBJECT_DIR = CMakeFiles/httpServer.dir
   OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/model
 
-build CMakeFiles/httpServer.dir/src/handlers/users/user_handler.cpp.o: CXX_COMPILER__httpServer_unscanned_Debug /Users/a1-6/CLionProjects/httpServer/src/handlers/users/user_handler.cpp || cmake_object_order_depends_target_httpServer
+build CMakeFiles/httpServer.dir/src/model/order.cpp.o: CXX_COMPILER__httpServer_unscanned_Debug /Users/a1-6/CLionProjects/httpServer/src/model/order.cpp || cmake_object_order_depends_target_httpServer
   DEFINES = -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB
-  DEP_FILE = CMakeFiles/httpServer.dir/src/handlers/users/user_handler.cpp.o.d
+  DEP_FILE = CMakeFiles/httpServer.dir/src/model/order.cpp.o.d
   FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk -fcolor-diagnostics
   INCLUDES = -I/Users/a1-6/CLionProjects/httpServer/include -isystem /opt/homebrew/include
   OBJECT_DIR = CMakeFiles/httpServer.dir
-  OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/handlers/users
+  OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/model
 
-build CMakeFiles/httpServer.dir/src/handlers/users/user_query_handler.cpp.o: CXX_COMPILER__httpServer_unscanned_Debug /Users/a1-6/CLionProjects/httpServer/src/handlers/users/user_query_handler.cpp || cmake_object_order_depends_target_httpServer
+build CMakeFiles/httpServer.dir/src/handlers/user/user_handler.cpp.o: CXX_COMPILER__httpServer_unscanned_Debug /Users/a1-6/CLionProjects/httpServer/src/handlers/user/user_handler.cpp || cmake_object_order_depends_target_httpServer
   DEFINES = -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB
-  DEP_FILE = CMakeFiles/httpServer.dir/src/handlers/users/user_query_handler.cpp.o.d
+  DEP_FILE = CMakeFiles/httpServer.dir/src/handlers/user/user_handler.cpp.o.d
   FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk -fcolor-diagnostics
   INCLUDES = -I/Users/a1-6/CLionProjects/httpServer/include -isystem /opt/homebrew/include
   OBJECT_DIR = CMakeFiles/httpServer.dir
-  OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/handlers/users
+  OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/handlers/user
 
-build CMakeFiles/httpServer.dir/src/handlers/users/user_create_handler.cpp.o: CXX_COMPILER__httpServer_unscanned_Debug /Users/a1-6/CLionProjects/httpServer/src/handlers/users/user_create_handler.cpp || cmake_object_order_depends_target_httpServer
+build CMakeFiles/httpServer.dir/src/handlers/user/user_query_handler.cpp.o: CXX_COMPILER__httpServer_unscanned_Debug /Users/a1-6/CLionProjects/httpServer/src/handlers/user/user_query_handler.cpp || cmake_object_order_depends_target_httpServer
   DEFINES = -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB
-  DEP_FILE = CMakeFiles/httpServer.dir/src/handlers/users/user_create_handler.cpp.o.d
+  DEP_FILE = CMakeFiles/httpServer.dir/src/handlers/user/user_query_handler.cpp.o.d
   FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk -fcolor-diagnostics
   INCLUDES = -I/Users/a1-6/CLionProjects/httpServer/include -isystem /opt/homebrew/include
   OBJECT_DIR = CMakeFiles/httpServer.dir
-  OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/handlers/users
+  OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/handlers/user
 
-build CMakeFiles/httpServer.dir/src/handlers/users/user_update_handler.cpp.o: CXX_COMPILER__httpServer_unscanned_Debug /Users/a1-6/CLionProjects/httpServer/src/handlers/users/user_update_handler.cpp || cmake_object_order_depends_target_httpServer
+build CMakeFiles/httpServer.dir/src/handlers/user/user_create_handler.cpp.o: CXX_COMPILER__httpServer_unscanned_Debug /Users/a1-6/CLionProjects/httpServer/src/handlers/user/user_create_handler.cpp || cmake_object_order_depends_target_httpServer
   DEFINES = -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB
-  DEP_FILE = CMakeFiles/httpServer.dir/src/handlers/users/user_update_handler.cpp.o.d
+  DEP_FILE = CMakeFiles/httpServer.dir/src/handlers/user/user_create_handler.cpp.o.d
   FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk -fcolor-diagnostics
   INCLUDES = -I/Users/a1-6/CLionProjects/httpServer/include -isystem /opt/homebrew/include
   OBJECT_DIR = CMakeFiles/httpServer.dir
-  OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/handlers/users
+  OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/handlers/user
 
-build CMakeFiles/httpServer.dir/src/handlers/users/user_delete_handler.cpp.o: CXX_COMPILER__httpServer_unscanned_Debug /Users/a1-6/CLionProjects/httpServer/src/handlers/users/user_delete_handler.cpp || cmake_object_order_depends_target_httpServer
+build CMakeFiles/httpServer.dir/src/handlers/user/user_update_handler.cpp.o: CXX_COMPILER__httpServer_unscanned_Debug /Users/a1-6/CLionProjects/httpServer/src/handlers/user/user_update_handler.cpp || cmake_object_order_depends_target_httpServer
   DEFINES = -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB
-  DEP_FILE = CMakeFiles/httpServer.dir/src/handlers/users/user_delete_handler.cpp.o.d
+  DEP_FILE = CMakeFiles/httpServer.dir/src/handlers/user/user_update_handler.cpp.o.d
   FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk -fcolor-diagnostics
   INCLUDES = -I/Users/a1-6/CLionProjects/httpServer/include -isystem /opt/homebrew/include
   OBJECT_DIR = CMakeFiles/httpServer.dir
-  OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/handlers/users
+  OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/handlers/user
+
+build CMakeFiles/httpServer.dir/src/handlers/user/user_delete_handler.cpp.o: CXX_COMPILER__httpServer_unscanned_Debug /Users/a1-6/CLionProjects/httpServer/src/handlers/user/user_delete_handler.cpp || cmake_object_order_depends_target_httpServer
+  DEFINES = -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB
+  DEP_FILE = CMakeFiles/httpServer.dir/src/handlers/user/user_delete_handler.cpp.o.d
+  FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk -fcolor-diagnostics
+  INCLUDES = -I/Users/a1-6/CLionProjects/httpServer/include -isystem /opt/homebrew/include
+  OBJECT_DIR = CMakeFiles/httpServer.dir
+  OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/handlers/user
+
+build CMakeFiles/httpServer.dir/src/handlers/order/order_handler.cpp.o: CXX_COMPILER__httpServer_unscanned_Debug /Users/a1-6/CLionProjects/httpServer/src/handlers/order/order_handler.cpp || cmake_object_order_depends_target_httpServer
+  DEFINES = -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB
+  DEP_FILE = CMakeFiles/httpServer.dir/src/handlers/order/order_handler.cpp.o.d
+  FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk -fcolor-diagnostics
+  INCLUDES = -I/Users/a1-6/CLionProjects/httpServer/include -isystem /opt/homebrew/include
+  OBJECT_DIR = CMakeFiles/httpServer.dir
+  OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/handlers/order
+
+build CMakeFiles/httpServer.dir/src/handlers/order/order_query_handler.cpp.o: CXX_COMPILER__httpServer_unscanned_Debug /Users/a1-6/CLionProjects/httpServer/src/handlers/order/order_query_handler.cpp || cmake_object_order_depends_target_httpServer
+  DEFINES = -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB
+  DEP_FILE = CMakeFiles/httpServer.dir/src/handlers/order/order_query_handler.cpp.o.d
+  FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk -fcolor-diagnostics
+  INCLUDES = -I/Users/a1-6/CLionProjects/httpServer/include -isystem /opt/homebrew/include
+  OBJECT_DIR = CMakeFiles/httpServer.dir
+  OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/handlers/order
+
+build CMakeFiles/httpServer.dir/src/handlers/order/order_create_handler.cpp.o: CXX_COMPILER__httpServer_unscanned_Debug /Users/a1-6/CLionProjects/httpServer/src/handlers/order/order_create_handler.cpp || cmake_object_order_depends_target_httpServer
+  DEFINES = -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB
+  DEP_FILE = CMakeFiles/httpServer.dir/src/handlers/order/order_create_handler.cpp.o.d
+  FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk -fcolor-diagnostics
+  INCLUDES = -I/Users/a1-6/CLionProjects/httpServer/include -isystem /opt/homebrew/include
+  OBJECT_DIR = CMakeFiles/httpServer.dir
+  OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/handlers/order
+
+build CMakeFiles/httpServer.dir/src/handlers/order/order_update_handler.cpp.o: CXX_COMPILER__httpServer_unscanned_Debug /Users/a1-6/CLionProjects/httpServer/src/handlers/order/order_update_handler.cpp || cmake_object_order_depends_target_httpServer
+  DEFINES = -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB
+  DEP_FILE = CMakeFiles/httpServer.dir/src/handlers/order/order_update_handler.cpp.o.d
+  FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk -fcolor-diagnostics
+  INCLUDES = -I/Users/a1-6/CLionProjects/httpServer/include -isystem /opt/homebrew/include
+  OBJECT_DIR = CMakeFiles/httpServer.dir
+  OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/handlers/order
+
+build CMakeFiles/httpServer.dir/src/handlers/order/order_delete_handler.cpp.o: CXX_COMPILER__httpServer_unscanned_Debug /Users/a1-6/CLionProjects/httpServer/src/handlers/order/order_delete_handler.cpp || cmake_object_order_depends_target_httpServer
+  DEFINES = -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB
+  DEP_FILE = CMakeFiles/httpServer.dir/src/handlers/order/order_delete_handler.cpp.o.d
+  FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk -fcolor-diagnostics
+  INCLUDES = -I/Users/a1-6/CLionProjects/httpServer/include -isystem /opt/homebrew/include
+  OBJECT_DIR = CMakeFiles/httpServer.dir
+  OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/handlers/order
 
 build CMakeFiles/httpServer.dir/src/register/register_center.cpp.o: CXX_COMPILER__httpServer_unscanned_Debug /Users/a1-6/CLionProjects/httpServer/src/register/register_center.cpp || cmake_object_order_depends_target_httpServer
   DEFINES = -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB
@@ -153,6 +193,14 @@ build CMakeFiles/httpServer.dir/src/register/register_center.cpp.o: CXX_COMPILER
   OBJECT_DIR = CMakeFiles/httpServer.dir
   OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/register
 
+build CMakeFiles/httpServer.dir/src/handlers/handler.cpp.o: CXX_COMPILER__httpServer_unscanned_Debug /Users/a1-6/CLionProjects/httpServer/src/handlers/handler.cpp || cmake_object_order_depends_target_httpServer
+  DEFINES = -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB
+  DEP_FILE = CMakeFiles/httpServer.dir/src/handlers/handler.cpp.o.d
+  FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk -fcolor-diagnostics
+  INCLUDES = -I/Users/a1-6/CLionProjects/httpServer/include -isystem /opt/homebrew/include
+  OBJECT_DIR = CMakeFiles/httpServer.dir
+  OBJECT_FILE_DIR = CMakeFiles/httpServer.dir/src/handlers
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target httpServer
@@ -161,7 +209,7 @@ build CMakeFiles/httpServer.dir/src/register/register_center.cpp.o: CXX_COMPILER
 #############################################
 # Link the executable httpServer
 
-build httpServer: CXX_EXECUTABLE_LINKER__httpServer_Debug CMakeFiles/httpServer.dir/src/main.cpp.o CMakeFiles/httpServer.dir/src/http/request_parser.cpp.o CMakeFiles/httpServer.dir/src/http/http_server.cpp.o CMakeFiles/httpServer.dir/src/database/connection_pool.cpp.o CMakeFiles/httpServer.dir/src/database/database.cpp.o CMakeFiles/httpServer.dir/src/model/user_traits.cpp.o CMakeFiles/httpServer.dir/src/model/user.cpp.o CMakeFiles/httpServer.dir/src/handlers/users/user_handler.cpp.o CMakeFiles/httpServer.dir/src/handlers/users/user_query_handler.cpp.o CMakeFiles/httpServer.dir/src/handlers/users/user_create_handler.cpp.o CMakeFiles/httpServer.dir/src/handlers/users/user_update_handler.cpp.o CMakeFiles/httpServer.dir/src/handlers/users/user_delete_handler.cpp.o CMakeFiles/httpServer.dir/src/register/register_center.cpp.o | /opt/homebrew/lib/libboost_json.dylib /opt/homebrew/lib/libboost_system.dylib /opt/homebrew/lib/libboost_container.dylib
+build httpServer: CXX_EXECUTABLE_LINKER__httpServer_Debug CMakeFiles/httpServer.dir/src/main.cpp.o CMakeFiles/httpServer.dir/src/http/request_parser.cpp.o CMakeFiles/httpServer.dir/src/http/http_server.cpp.o CMakeFiles/httpServer.dir/src/database/connection_pool.cpp.o CMakeFiles/httpServer.dir/src/database/database.cpp.o CMakeFiles/httpServer.dir/src/model/user.cpp.o CMakeFiles/httpServer.dir/src/model/order.cpp.o CMakeFiles/httpServer.dir/src/handlers/user/user_handler.cpp.o CMakeFiles/httpServer.dir/src/handlers/user/user_query_handler.cpp.o CMakeFiles/httpServer.dir/src/handlers/user/user_create_handler.cpp.o CMakeFiles/httpServer.dir/src/handlers/user/user_update_handler.cpp.o CMakeFiles/httpServer.dir/src/handlers/user/user_delete_handler.cpp.o CMakeFiles/httpServer.dir/src/handlers/order/order_handler.cpp.o CMakeFiles/httpServer.dir/src/handlers/order/order_query_handler.cpp.o CMakeFiles/httpServer.dir/src/handlers/order/order_create_handler.cpp.o CMakeFiles/httpServer.dir/src/handlers/order/order_update_handler.cpp.o CMakeFiles/httpServer.dir/src/handlers/order/order_delete_handler.cpp.o CMakeFiles/httpServer.dir/src/register/register_center.cpp.o CMakeFiles/httpServer.dir/src/handlers/handler.cpp.o | /opt/homebrew/lib/libboost_json.dylib /opt/homebrew/lib/libboost_system.dylib /opt/homebrew/lib/libboost_container.dylib
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk
   LINK_LIBRARIES = /opt/homebrew/lib/libboost_json.dylib  /opt/homebrew/lib/libboost_system.dylib  -lpthread  -lsqlite3  /opt/homebrew/lib/libboost_container.dylib
   OBJECT_DIR = CMakeFiles/httpServer.dir
