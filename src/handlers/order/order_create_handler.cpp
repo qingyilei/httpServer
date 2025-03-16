@@ -2,7 +2,7 @@
 #include <string>
 #include "model/order.h"
 
-std::string OrderCreateHandler::handle(const HttpRequest &request) {
+std::string OrderCreateHandler::handle(const http_request &request) {
 
 
     Order order = Order(0,

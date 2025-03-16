@@ -3,7 +3,7 @@
 //
 #include "handlers/handler.h"
 
-std::string Handler::handle(const HttpRequest &request) {
+std::string Handler::handle(const http_request &request) {
     return {""};
 }
 

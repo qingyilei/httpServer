@@ -11,7 +11,8 @@
 #include "sql_executor.h"
 #include <iostream>
 #include "enums/operator_type.h"
-template <class Model>
+
+template<class Model>
 class SqlPage {
 public:
     SqlPage(std::string &sql_operator, int page, int page_size)
@@ -43,6 +44,11 @@ public:
                 orderBy_ += item.first + (item.second ? " DESC" : " ASC");
             }
         }
+        return *this;
+    }
+
+    SqlPage &order_by() {
+        orderBy_ = "ORDER BY " + ModelTraits<Model>::instance().primary_key() + " DESC";
         return *this;
     }
 

@@ -17,6 +17,9 @@ void User::register_fields() {
 }
 
 std::vector<std::pair<MessageLevel,std::string>>  User::verify() {
+    if (name.empty()) {
+        return {std::make_pair(MessageLevel::ERROR, "name is empty")};
+    }
     return {};
 }
 

@@ -35,14 +35,18 @@ add_executable(${PROJECT_NAME} src/main.cpp
         src/handlers/user/user_create_handler.cpp
         src/handlers/user/user_update_handler.cpp
         src/handlers/user/user_delete_handler.cpp
+        src/handlers/user/user_delete_handler.cpp
+        src/handlers/user/user_batch_handler.cpp
         src/handlers/order/order_handler.cpp
         src/handlers/order/order_query_handler.cpp
         src/handlers/order/order_create_handler.cpp
         src/handlers/order/order_update_handler.cpp
         src/handlers/order/order_delete_handler.cpp
+        src/handlers/order/order_batch_handler.cpp
         include/register/register_center.h
         src/register/register_center.cpp
         src/handlers/handler.cpp
+        include/log/logger.h
 
 
 )

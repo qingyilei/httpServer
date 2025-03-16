@@ -6,11 +6,13 @@
 #define SQL_EXECUTOR_H
 
 #include <string>
+#include <utility>
 #include <vector>
 #include <sstream>
 #include <iostream>
 #include "enums/operator_type.h"
 #include "database/database.h"
+#include "log/logger.h"
 
 template<class Model>
 class SqlExecutor {
@@ -26,7 +28,6 @@ public:
         std::cout << "SqlExecutor destroy" << std::endl;
     }
 
-
     QueryResult<Model> query_execute() {
         int total = Database::instance().query_count(count_sql_);
         auto result = Database::instance().query_data<Model>(operator_sql_);
@@ -38,15 +39,35 @@ public:
                                     });
     }
 
-    void save_execute(Model &obj) {
+    int save_execute(Model &obj) {
         auto &db = Database::instance();
-        const std::string &id = ModelTraits<Model>::instance().primary_key();
         int count = obj.field_count_primary();
-        std::cout<<"operator sql:"<<operator_sql_<<std::endl;
+        std::cout << "operator sql:" << operator_sql_ << std::endl;
         int saveId = (count == 0 || obj.template get<int>("id") == 0) ?
                      db.insert(this->operator_sql_, obj)
-                     : db.update(this->operator_sql_, obj);
+                                                                      : db.update(this->operator_sql_, obj);
         obj.set("id", saveId);
+        return saveId;
+    }
+
+    int batch_execute(std::vector<Model> &objs) {
+        if (objs.empty()) {
+            return 0;
+        }
+        std::cout << "operator sql:" << operator_sql_ << std::endl;
+
+        auto future =  Database::instance().batch_insert(this->operator_sql_, objs, 1000);
+        try {
+            future.get(); // 捕获可能的异常
+        } catch (const std::exception& e) {
+            Logger::getInstance().error(std::format("execute batch  failed:{}",e.what()));
+            throw std::runtime_error("execute batch  failed");
+        }
+        return static_cast<int>(objs.size());
+    }
+
+    int remove_execute(Model &obj) {
+        return Database::instance().remove(this->operator_sql_, obj);
     }
 
 
@@ -60,7 +81,7 @@ private:
     int page_;
     int page_size_;
     OperatorType operator_type_;
-    std::string count_sql_;
+    const std::string count_sql_;
     std::string operator_sql_;
 };
 

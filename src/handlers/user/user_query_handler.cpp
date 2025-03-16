@@ -3,7 +3,7 @@
 #include "sql/sql_operator.h"
 #include <sstream>
 
-std::string UserQueryHandler::handle(const HttpRequest &request) {
+std::string UserQueryHandler::handle(const http_request &request) {
     auto &params = request.params;
     int id = CommonUtil::get_param(params, "id", 0);
     int age = CommonUtil::get_param(params, "age", 0);
@@ -26,28 +26,6 @@ std::string UserQueryHandler::handle(const HttpRequest &request) {
                  .page(page,size)
                  ->order_by(ids)
                  .operator_sql()->query_execute();
-
-
-    //    std::unique_ptr<SqlTable<User>> tableUser =
-//    .select()->table("user")
-//    .fields()
-//    .where()
-//    .like_condition("name")
-//    .r_like_condition("email")
-//    .in_condition<int>("age", ages)
-//    .order_by("id", false)
-//    .page(page)
-//    .page_size(size)
-//    .execute();
-
-//    auto result = user.builder()
-//            .like_condition("name")
-//            .r_like_condition("email")
-//            .in_condition<int>("age", ages)
-//            .order_by("id", false)
-//            .page(page)
-//            .page_size(size)
-//            .execute();
     return generate_resp(result.to_json());
 
 }

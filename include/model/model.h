@@ -17,6 +17,8 @@
 #include <ranges>
 #include <format>
 #include <numeric>
+#include "log/logger.h"
+#include "sql/sql_operator.h"
 
 namespace json = boost::json;
 
@@ -72,30 +74,26 @@ public:
                                                      std::string{}, [](const std::string &a, const std::string &b) {
                         return a.empty() ? b : a + "\n" + b;
                     });
+            Logger::getInstance().error(errorLines);
             throw std::runtime_error(errorLines);
         }
     }
+
     void save() {
         process_verify();
-        auto &db = Database::instance();
         const std::string &id = ModelTraits<Derived>::instance().primary_key();
         int count = this->fields_.count(id);
         int saveId = (count == 0 || get<int>("id") == 0) ?
-                     db.insert(*static_cast<Derived *>(this))
-                                                         : db.update(*static_cast<Derived *>(this));
+                     SqlOperator<Derived>::instance().insert()
+                             ->fields()
+                             ->clear_field("id")
+                             .operator_sql()->save_execute(*static_cast<Derived *>(this))
+                             : SqlOperator<Derived>::instance().update()
+                             ->fields()
+                             ->clear_field("id").where()
+                             ->template eq<int>("id", *static_cast<Derived *>(this))
+                             .operator_sql()->save_execute(*static_cast<Derived *>(this));
         this->set("id", saveId);
-
-    }
-    void save_sql() {
-        process_verify();
-        auto &db = Database::instance();
-        const std::string &id = ModelTraits<Derived>::instance().primary_key();
-        int count = this->fields_.count(id);
-        int saveId = (count == 0 || get<int>("id") == 0) ?
-                     db.insert(*static_cast<Derived *>(this))
-                                                         : db.update(*static_cast<Derived *>(this));
-        this->set("id", saveId);
-
     }
 
     int field_count_primary() {
@@ -104,7 +102,10 @@ public:
     }
 
     void remove() {
-        Database::instance().remove(*static_cast<Derived *>(this));
+        SqlOperator<Derived>::instance().remove()->where()
+                ->template eq<int>("id",*static_cast<Derived *>(this)).operator_sql()
+                ->remove_execute(*static_cast<Derived *>(this));
+
     }
 
     [[nodiscard]] FieldValue get_field_value(const std::string &field_name) const {

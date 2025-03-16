@@ -2,5 +2,5 @@
 
 class UserDeleteHandler  :public Handler{
 public:
-std::string handle(const HttpRequest &request)  override;
+std::string handle(const http_request &request)  override;
 };

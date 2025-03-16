@@ -18,8 +18,8 @@ struct always_false : std::false_type {
 
 
 
-struct HttpRequest {
-    HttpRequest() = default;
+struct http_request {
+    http_request() = default;
 
     std::string method;
     std::string path;

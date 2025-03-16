@@ -7,7 +7,7 @@
 #include <boost/json/value.hpp>
 #include "handlers/handler.h"
 
-class UserCreateHandler :public Handler{
+class UserBatchHandler :public Handler{
 public:
      std::string handle(const http_request &request) override;
 };

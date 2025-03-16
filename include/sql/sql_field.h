@@ -9,6 +9,7 @@
 #include <vector>
 #include "utils/common_util.h"
 #include "sql_where.h"
+#include "log/logger.h"
 
 
 template<class Model>
@@ -57,21 +58,30 @@ public:
     std::unique_ptr<SqlExecutor<Model>> operator_sql() {
         replace_fields();
         if (this->operator_sql_.find("INSERT") != std::string::npos) {
-            std::string val;
-            for (int i = 0, len = this->fields_.size(); i < len; i++) {
+            // 检查 fields_ 是否为空
+            if (this->fields_.empty()) {
+                // 根据业务需求处理，例如抛出异常或返回错误
+                // 当前代码保留原有行为，但需注意此处逻辑风险
+                Logger::getInstance().error("INSERT operation requires non-empty fields");
+                throw std::runtime_error("INSERT operation requires non-empty fields");
+
+            }
+            std::ostringstream val_stream;
+            const size_t len = this->fields_.size();
+            for (size_t i = 0; i < len; ++i) {
+                val_stream << ":" << fields_[i];
                 if (i < len - 1) {
-                    val += ":"+fields_[i]+",";
-                } else {
-                    val += ":"+fields_[i];
+                    val_stream << ",";
                 }
             }
-            CommonUtil::replace_all(this->operator_sql_, "%v", val);
+            CommonUtil::replace_all(this->operator_sql_, "%v", val_stream.str());
         }
-        auto count_sql = std::string("");
+        auto count_sql = std::string(""); // 需确认该参数是否合理
         return std::make_unique<SqlExecutor<Model>>(
                 OperatorType::COUNT, 0,
-                0, count_sql, this->operator_sql_);
+                0,count_sql, this->operator_sql_);
     }
+
 
 private:
 

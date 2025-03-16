@@ -12,7 +12,7 @@ class OrderHandler : public Handler {
 public:
     OrderHandler();
     ~OrderHandler() override;
-    std::string handle(const HttpRequest &request) override {
+    std::string handle(const http_request &request) override {
         return {""};
     }
 };

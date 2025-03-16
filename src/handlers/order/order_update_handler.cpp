@@ -2,7 +2,7 @@
 #include <sstream>
 #include "model/order.h"
 
-std::string OrderUpdateHandler::handle(const HttpRequest &request) {
+std::string OrderUpdateHandler::handle(const http_request &request) {
     // 模拟实现：打印接收到的body并返回一个成功的消息
 
     Order order = Order(request.request_body_field<int>("id"),

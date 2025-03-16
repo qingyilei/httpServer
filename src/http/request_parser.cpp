@@ -10,8 +10,8 @@
 #include <utility>
 #include <stdexcept>
 
-std::optional<HttpRequest> RequestParser::parse(const std::string &raw_request) {
-    HttpRequest req;
+std::optional<http_request> RequestParser::parse(const std::string &raw_request) {
+    http_request req;
     std::istringstream iss(raw_request);  // 使用传入的 raw_request 而不是硬编码的字符串
     std::string line;
 
@@ -32,7 +32,7 @@ std::optional<HttpRequest> RequestParser::parse(const std::string &raw_request) 
     return req;
 }
 
-bool RequestParser::parseParams(HttpRequest &request) {
+bool RequestParser::parseParams(http_request &request) {
     std::multimap<std::string, std::string> params;
 
     size_t query_start = request.path.find('?');
@@ -65,7 +65,7 @@ bool RequestParser::parseParams(HttpRequest &request) {
     return true;
 }
 
-bool RequestParser::parsePath(HttpRequest &request) {
+bool RequestParser::parsePath(http_request &request) {
     size_t domain_start = 0;
     size_t domain_end = std::string::npos;
     size_t operation_start = std::string::npos;
@@ -82,7 +82,13 @@ bool RequestParser::parsePath(HttpRequest &request) {
 
     // 查找业务领域结束位置
     domain_end = path.find('/', domain_start);
+    if (domain_end == std::string::npos) {
+        domain_end = path.find('?', domain_start);
+    }
 
+    if (domain_end == std::string::npos) {
+        domain_end = path.size();
+    }
     // 处理没有操作部分的情况
     if (domain_end == std::string::npos) {
         throw std::invalid_argument("Invalid path: no operation found");
@@ -93,10 +99,6 @@ bool RequestParser::parsePath(HttpRequest &request) {
     while (operation_start < path.size() && path[operation_start] == '/') {
         ++operation_start;
     }
-
-//    if (operation_start >= path.size()) {
-//        throw std::invalid_argument("Invalid path: no operation found");
-//    }
 
     // 查找操作结束位置
     operation_end = path.find('/', operation_start);
@@ -115,7 +117,7 @@ bool RequestParser::parsePath(HttpRequest &request) {
 }
 
 
-bool RequestParser::parseHeaders(std::istringstream &iss, HttpRequest &req) {
+bool RequestParser::parseHeaders(std::istringstream &iss, http_request &req) {
     std::string line;
     while (std::getline(iss, line)) {
         line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
@@ -135,7 +137,7 @@ bool RequestParser::parseHeaders(std::istringstream &iss, HttpRequest &req) {
     return false;  // 如果没有找到空行，表示Header解析失败
 }
 
-bool RequestParser::parseBody(std::istringstream &iss, HttpRequest &req) {
+bool RequestParser::parseBody(std::istringstream &iss, http_request &req) {
     std::string body_content;
     std::string line;
     while (std::getline(iss, line)) {

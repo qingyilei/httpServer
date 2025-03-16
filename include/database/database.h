@@ -10,11 +10,12 @@
 #include "connection_pool.h"
 #include "model/model_traits.h"
 #include "query_result.h"
-
+#include "log/logger.h"
 
 #include <format>
 #include <variant>
 #include <iostream>
+#include <future>
 
 
 class Database {
@@ -28,15 +29,6 @@ public:
 
     void rollback(sqlite3 *conn);
 
-// 创建表（自动生成DDL）
-    template<typename Model>
-    void create_table() {
-        const auto &traits = ModelTraits<Model>::instance();
-        std::string sql = traits.generate_create_table_ddl();
-        execute_transaction([this](sqlite3 *conn, std::string &createSql) {
-            execute(conn, createSql);
-        }, sql);
-    }
 
     // 插入记录（返回自增ID）
     template<typename Model>
@@ -49,37 +41,32 @@ public:
         }, obj);
     }
 
-    // 插入记录（返回自增ID）
     template<typename Model>
-    int insert(const Model &obj) {
-        return execute_transaction([this](sqlite3 *conn, const Model &insertObj) {
-            auto sql = generate_insert_sql<Model>();
-            auto stmt = prepare_statement(conn, sql);
-            bind_model_params(stmt.get(), insertObj);
-            execute_statement(stmt.get());
-            return sqlite3_last_insert_rowid(conn);
-        }, obj);
+    std::future<void> batch_insert(const std::string create_sql, const std::vector<Model> &objs,size_t batch_size = 1000) {
+        return std::async(std::launch::async, [this, create_sql, objs, batch_size]() {
+            execute_transaction([this, &objs, &create_sql, &batch_size](sqlite3 *conn, const std::vector<Model> &list) {
+                auto stmt = prepare_statement(conn, create_sql); // 预处理语句复用
+                size_t total = list.size();
+                for (size_t i = 0; i < total; i += batch_size) {
+                    size_t batch_end = std::min(i + batch_size, total); // 计算当前批次结束位置
+                    for (size_t j = i; j < batch_end; ++j) {
+                        const auto &obj = list[j];
+                        bind_name_params(stmt.get(), obj); // 绑定参数
+                        if (sqlite3_step(stmt.get()) != SQLITE_DONE) {
+                            Logger::getInstance().error(std::format("Insert failed: {}", sqlite3_errmsg(conn)));
+                            throw std::runtime_error("Insert failed: " + std::string(sqlite3_errmsg(conn)));
+                        }
+                        // 重置语句以便下次使用
+                        sqlite3_reset(stmt.get());
+                        sqlite3_clear_bindings(stmt.get());
+                    }
+                    // 可选：定期提交（如每批提交，但需确保事务原子性）
+                }
+                return objs.size();
+            }, objs); // 通过execute_transaction传递参数
+        });
     }
 
-
-    template<typename Model>
-    int update(const Model &obj) {
-        return execute_transaction([this](sqlite3 *conn, const Model &insertObj) {
-            auto sql = generate_update_sql<Model>();
-            std::cout << "update sql:" << sql << std::endl;
-            auto stmt = prepare_statement(conn, sql);
-            bind_model_params(stmt.get(), insertObj);
-            bind_primary_key(stmt.get(), insertObj);
-            int rc = sqlite3_step(stmt.get());
-            if (rc != SQLITE_DONE) {
-                fprintf(stderr, "Execution error: %s\n", sqlite3_errmsg(conn));
-                throw std::runtime_error(std::format("execution update sql {} error", sql));
-            }
-            int changes = sqlite3_changes(conn);
-            std::cout << "change count:" << changes << std::endl;
-            return changes;
-        }, obj);
-    }
 
 // 更新记录
     template<typename Model>
@@ -101,13 +88,9 @@ public:
 
 // 删除记录
     template<typename Model>
-    int remove(const Model &obj) {
-        const auto &traits = ModelTraits<Model>::instance();
-        auto sql = std::format("DELETE FROM {} WHERE {} = ?", traits.table_name(),
-                               traits.primary_key());
+    int remove(const std::string &sql, const Model &obj) {
         return execute_transaction([this](sqlite3 *conn, const Model &deleteObj, decltype(sql) deleteSql) {
             auto stmt = prepare_statement(conn, deleteSql);
-            bind_primary_key(stmt.get(), deleteObj);
             return execute_statement(stmt.get());
         }, obj, sql);
 
@@ -130,10 +113,11 @@ public:
             pool_->release(conn);
             return result;
         } catch (const std::exception &e) {
-            rollback(conn);
             pool_->release(conn);
+            rollback(conn);
             std::cerr << "Commit failed: " << e.what() << std::endl;
-            throw std::runtime_error("rollback error");
+            Logger::getInstance().error(std::format("execute sql failed:{}", e.what()));
+            throw std::runtime_error(e.what());
         }
     }
 
@@ -178,30 +162,10 @@ public:
 
 private:
     Database() {
-        pool_ = std::make_unique<ConnectionPool>("users.db", 10);
+        pool_ = std::make_unique<ConnectionPool>("users.db", 50);
     }
 
     std::unique_ptr<ConnectionPool> pool_;
-
-    // 生成INSERT SQL
-    template<typename Model>
-    std::string generate_insert_sql() {
-        const auto &traits = ModelTraits<Model>::instance();
-
-        std::string columns;
-        std::string placeholders;
-        for (const auto &[name, _]: traits.fields()) {
-            if (name == traits.primary_key()) continue;
-
-            if (!columns.empty()) columns += ", ";
-            columns += name;
-
-            if (!placeholders.empty()) placeholders += ", ";
-            placeholders += "?";
-        }
-
-        return std::format("INSERT INTO {} ({}) VALUES ({})", traits.table_name(), columns, placeholders);
-    }
 
     template<typename Model>
     Model parse_row(sqlite3_stmt *stmt) const {
@@ -217,7 +181,6 @@ private:
                     break;
                 case SQLITE_FLOAT:
                     ModelTraits<Model>::instance().set_field(col_name, obj, sqlite3_column_double(stmt, i));
-
                     break;
                 case SQLITE_TEXT:
                     ModelTraits<Model>::instance().set_field(col_name, obj, std::string(
@@ -240,69 +203,27 @@ private:
         return obj;
     }
 
-    // 生成UPDATE SQL
-    template<typename Model>
-    std::string generate_update_sql() {
-        const auto &traits = ModelTraits<Model>::instance();
-
-        std::string set_clause;
-        for (const auto &[name, _]: traits.fields()) {
-            if (name == traits.primary_key()) continue;
-
-            if (!set_clause.empty()) set_clause += ", ";
-            set_clause += name + " = ?";
-        }
-
-        return std::format("UPDATE {} SET {} WHERE {}= ?", traits.table_name(), set_clause, traits.primary_key());
-    }
-
-    // 绑定模型参数
-    template<typename Model>
-    void bind_model_params(sqlite3_stmt *stmt, const Model &obj) {
-        const auto &traits = ModelTraits<Model>::instance();
-        int index = 1;
-
-        for (const auto &[name, field]: traits.fields()) {
-            if (name == traits.primary_key()) continue;
-
-            std::visit([&](auto &&value) {
-                using T = std::decay_t<decltype(value)>;
-                if constexpr (std::is_same_v<T, int>) {
-                    sqlite3_bind_int(stmt, index++, value);
-                } else if constexpr (std::is_same_v<T, double>) {
-                    sqlite3_bind_double(stmt, index++, value);
-                } else if constexpr (std::is_same_v<T, std::string>) {
-                    sqlite3_bind_text(stmt, index++, value.c_str(), -1, SQLITE_TRANSIENT);
-                } else if constexpr (std::is_same_v<T, std::vector<uint8_t>>) {
-                    sqlite3_bind_blob(stmt, index++, value.data(), value.size(), SQLITE_TRANSIENT);
-                }
-            }, obj.get_field_value(name));
-        }
-    }
-
     // 绑定模型参数
     template<typename Model>
     void bind_name_params(sqlite3_stmt *stmt, const Model &obj) {
         const auto &traits = ModelTraits<Model>::instance();
         int index = 1;
-
-        sqlite3_bind_text(stmt, sqlite3_bind_parameter_index(stmt, ":name"), "Alice", -1, SQLITE_TRANSIENT);
-        sqlite3_bind_int(stmt, sqlite3_bind_parameter_index(stmt, ":age"), 30);
-
         for (const auto &[name, field]: traits.fields()) {
             if (name == traits.primary_key()) continue;
-            int param_index =sqlite3_bind_parameter_index(stmt,std::string((":"+name)).c_str());
+            int param_index = sqlite3_bind_parameter_index(stmt, std::string((":" + name)).c_str());
 
             std::visit([&](auto &&value) {
                 using T = std::decay_t<decltype(value)>;
                 if constexpr (std::is_same_v<T, int>) {
-                    sqlite3_bind_int(stmt, param_index > 0 ? param_index: index++, value);
+                    sqlite3_bind_int(stmt, param_index > 0 ? param_index : index++, value);
                 } else if constexpr (std::is_same_v<T, double>) {
-                    sqlite3_bind_double(stmt, param_index > 0 ? param_index: index++, value);
+                    sqlite3_bind_double(stmt, param_index > 0 ? param_index : index++, value);
                 } else if constexpr (std::is_same_v<T, std::string>) {
-                    sqlite3_bind_text(stmt, param_index > 0 ? param_index: index++, value.c_str(), -1, SQLITE_TRANSIENT);
+                    sqlite3_bind_text(stmt, param_index > 0 ? param_index : index++, value.c_str(), -1,
+                                      SQLITE_TRANSIENT);
                 } else if constexpr (std::is_same_v<T, std::vector<uint8_t>>) {
-                    sqlite3_bind_blob(stmt, param_index > 0 ? param_index: index++, value.data(), value.size(), SQLITE_TRANSIENT);
+                    sqlite3_bind_blob(stmt, param_index > 0 ? param_index : index++, value.data(), value.size(),
+                                      SQLITE_TRANSIENT);
                 }
             }, obj.get_field_value(name));
         }

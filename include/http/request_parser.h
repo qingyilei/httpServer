@@ -5,7 +5,7 @@
 #include <string>
 #include <boost/json.hpp>
 #include <map>  // 添加头文件以支持std::map
-#include "HttpRequest.h"
+#include "http_request.h"
 #include <charconv>
 #include <sstream>
 
@@ -33,13 +33,13 @@ public:
        }
        return decoded.str();
    }
-    static std::optional<HttpRequest> parse(const std::string &raw_request);
+    static std::optional<http_request> parse(const std::string &raw_request);
 
-    static bool parsePath(HttpRequest &request);
+    static bool parsePath(http_request &request);
 
-    static bool parseParams(HttpRequest &request);
+    static bool parseParams(http_request &request);
 
-    static bool parseHeaders(std::istringstream &iss, HttpRequest &request);
+    static bool parseHeaders(std::istringstream &iss, http_request &request);
 
-    static bool parseBody(std::istringstream &iss, HttpRequest &req);
+    static bool parseBody(std::istringstream &iss, http_request &req);
 };

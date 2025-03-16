@@ -2,7 +2,7 @@
 #include <sstream>
 #include "model/user.h"
 
-std::string UserUpdateHandler::handle(const HttpRequest &request) {
+std::string UserUpdateHandler::handle(const http_request &request) {
     // 模拟实现：打印接收到的body并返回一个成功的消息
 
     User user = User(request.request_body_field<int>("id"),

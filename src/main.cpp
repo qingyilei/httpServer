@@ -10,11 +10,11 @@ int main() {
     // 更新后的路由注册（适配新的Handler签名）
     server.router().add_route(
             "user",
-            [](const HttpRequest &req) {
+            [](const http_request &req) {
                 UserHandler userHandler;
                 return userHandler.process(req);
             }).add_route("order",
-                         [](const HttpRequest &req) {
+                         [](const http_request &req) {
                              OrderHandler orderHandler;
                              return orderHandler.process(req);
                          });
