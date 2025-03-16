@@ -18,7 +18,7 @@ template<class Model>
 class SqlExecutor {
 public:
     SqlExecutor(OperatorType operator_type, int page, int page_size,
-                std::string &count_sql, std::string &operator_sql)
+                std::string &&count_sql, std::string &&operator_sql)
             : operator_type_(operator_type), page_(page), page_size_(page_size),
               count_sql_(count_sql), operator_sql_(operator_sql) {
         std::cout << "SqlExecutor init" << std::endl;
@@ -81,7 +81,7 @@ private:
     int page_;
     int page_size_;
     OperatorType operator_type_;
-    const std::string count_sql_;
+    std::string count_sql_;
     std::string operator_sql_;
 };
 

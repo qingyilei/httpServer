@@ -20,7 +20,7 @@ public:
      * model traits table_name
      * @param table
      */
-    explicit SqlWhere(std::string &sql_operator) : sql_operator_(sql_operator) {
+    explicit SqlWhere(std::string &&sql_operator) : sql_operator_(sql_operator) {
         std::cout << "SqlWhere init" << std::endl;
     }
 
@@ -74,17 +74,27 @@ public:
     }
 
     std::unique_ptr<SqlPage<Model>> page(int page, int page_size) {
-        CommonUtil::replace_all(this->sql_operator_, "%w", join_conditions(sql_condition_));
+        std::string condition = join_conditions(sql_condition_);
+        if (condition.empty()) {
+            CommonUtil::replace_all(this->sql_operator_, "%w", "1=1");
+        } else {
+            CommonUtil::replace_all(this->sql_operator_,"%w",condition);
+        }
         return std::make_unique<SqlPage<Model>>(this->sql_operator_,page,page_size);
     }
 
     std::unique_ptr<SqlExecutor<Model>> operator_sql() {
 
-        auto count_sql = std::string("");
-        CommonUtil::replace_all(this->sql_operator_, "%w", join_conditions(sql_condition_));
+        std::string condition = join_conditions(sql_condition_);
+        if (condition.empty()) {
+            CommonUtil::replace_all(this->sql_operator_, "%w", "1=1");
+        } else {
+            CommonUtil::replace_all(this->sql_operator_,"%w",condition);
+        }
+        CommonUtil::replace_all(this->sql_operator_, "%w", condition);
         return std::make_unique<SqlExecutor<Model>>(
                 OperatorType::CREATE, 0,
-                0, count_sql, this->sql_operator_);
+                0, "", std::move(this->sql_operator_));
     }
 
 private:

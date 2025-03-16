@@ -15,7 +15,7 @@
 template<class Model>
 class SqlField {
 public:
-    SqlField(std::string &operator_sql, std::vector<std::string> &fields) : operator_sql_(operator_sql),
+    SqlField(std::string &&operator_sql, std::vector<std::string> &fields) : operator_sql_(operator_sql),
                                                                             fields_(fields) {
         std::cout << "SqlField init" << std::endl;
     }
@@ -51,7 +51,7 @@ public:
     std::unique_ptr<SqlWhere<Model>> where() {
         std::string join_fields = replace_fields();
         CommonUtil::replace_all(this->operator_sql_, "%f", join_fields);
-        return std::make_unique<SqlWhere<Model>>(this->operator_sql_);
+        return std::make_unique<SqlWhere<Model>>(std::move(this->operator_sql_));
     }
 
 
@@ -76,10 +76,9 @@ public:
             }
             CommonUtil::replace_all(this->operator_sql_, "%v", val_stream.str());
         }
-        auto count_sql = std::string(""); // 需确认该参数是否合理
         return std::make_unique<SqlExecutor<Model>>(
                 OperatorType::COUNT, 0,
-                0,count_sql, this->operator_sql_);
+                0,"", std::move(this->operator_sql_));
     }
 
 

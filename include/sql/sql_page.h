@@ -57,7 +57,7 @@ public:
         CommonUtil::replace_between(countSql, "SELECT", "FROM", " COUNT(*) ");
         return std::make_unique<SqlExecutor<Model>>(
                 OperatorType::COUNT, page_,
-                page_size_, countSql, this->sql_operator_);
+                page_size_, std::move(countSql), std::move(this->sql_operator_));
 
     }
 

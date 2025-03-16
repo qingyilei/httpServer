@@ -21,7 +21,7 @@ public:
     }
 
     std::unique_ptr<SqlTable<Model>> update() {
-        return std::make_unique<SqlTable<Model>>(std::string( "UPDATE %t SET %f WHERE %w "), ModelTraits<Model>::instance().table_name());
+        return std::make_unique<SqlTable<Model>>(std::string( "UPDATE %t SET %f WHERE (%w) "), ModelTraits<Model>::instance().table_name());
     }
 
     std::unique_ptr<SqlTable<Model>> select() {
