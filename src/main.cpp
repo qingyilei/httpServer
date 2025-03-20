@@ -1,7 +1,8 @@
 #include "http/http_server.h"
 #include "handlers/user/user_handler.h"
 #include "register/register_center.h"
-#include "handlers/order//order_handler.h"
+#include "handlers/order/order_handler.h"
+#include "handlers/file/file_upload_handler.h"
 
 
 int main() {
@@ -9,15 +10,20 @@ int main() {
     RegisterCenter::instance().register_handler();
     // 更新后的路由注册（适配新的Handler签名）
     server.router().add_route(
-            "user",
-            [](const http_request &req) {
-                UserHandler userHandler;
-                return userHandler.process(req);
-            }).add_route("order",
-                         [](const http_request &req) {
-                             OrderHandler orderHandler;
-                             return orderHandler.process(req);
-                         });
+                    "user",
+                    [](const http_request &req) {
+                        UserHandler userHandler;
+                        return userHandler.process(req);
+                    }).add_route("order",
+                                 [](const http_request &req) {
+                                     OrderHandler orderHandler;
+                                     return orderHandler.process(req);
+                                 })
+            .add_route("upload",
+                       [](const http_request &req) {
+                           FileUploadHandler fileUploadHandler;
+                           return fileUploadHandler.handle(req);
+                       });;
     server.start();
     return 0;
 }

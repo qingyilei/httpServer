@@ -16,7 +16,7 @@ template<class Model>
 class SqlField {
 public:
     SqlField(std::string &&operator_sql, std::vector<std::string> &fields) : operator_sql_(operator_sql),
-                                                                            fields_(fields) {
+                                                                             fields_(fields) {
         std::cout << "SqlField init" << std::endl;
     }
 
@@ -26,6 +26,17 @@ public:
 
     SqlField &field(const std::string &field) {
         this->fields_.push_back(field);
+        return *this;
+    }
+
+    template<class Target>
+    SqlField &field(const std::string &target_field, const std::string &as_fild) {
+        clear_field(as_fild);
+        std::stringstream ss_field;
+        ss_field << ModelTraits<Target>::instance().table_name()
+                 << "_." << target_field
+                 << " as " << as_fild;
+        this->fields_.push_back(ss_field.str());
         return *this;
     }
 
@@ -78,7 +89,7 @@ public:
         }
         return std::make_unique<SqlExecutor<Model>>(
                 OperatorType::COUNT, 0,
-                0,"", std::move(this->operator_sql_));
+                0, "", std::move(this->operator_sql_));
     }
 
 
@@ -93,13 +104,14 @@ private:
                 if (name == traits.primary_key()) continue;
 
                 if (!set_clause.empty()) set_clause += ", ";
-                set_clause += name + " = :"+name;
+                set_clause += name + " = :" + name;
             }
             join_fields = set_clause;
         }
         CommonUtil::replace_all(this->operator_sql_, "%f", join_fields);
         return join_fields;
     }
+
     /**
      * 1. select|update|delete
      * 2. select or update fields

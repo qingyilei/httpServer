@@ -5,6 +5,7 @@
 #include "handlers/order/order_update_handler.h"
 #include "handlers/order/order_delete_handler.h"
 #include "handlers/order/order_batch_handler.h"
+#include "handlers/order/order_user_query_handler.h"
 #include "model/order.h"
 
 #include <sstream>
@@ -16,6 +17,8 @@ OrderHandler::OrderHandler() {
     operators_.emplace("PUT", std::make_shared<OrderUpdateHandler>());
     operators_.emplace("DELETE", std::make_shared<OrderDeleteHandler>());
     operators_.emplace("batchSave", std::make_shared<OrderBatchHandler>());
+    operators_.emplace("orderUser", std::make_shared<OrderUserQueryHandler>());
+
 
 }
 OrderHandler::~OrderHandler() {

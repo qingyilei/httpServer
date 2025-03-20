@@ -21,22 +21,21 @@ public:
     }
 
     std::unique_ptr<SqlTable<Model>> update() {
-        return std::make_unique<SqlTable<Model>>(std::string( "UPDATE %t SET %f WHERE (%w) "), ModelTraits<Model>::instance().table_name());
+        return std::make_unique<SqlTable<Model>>("UPDATE %t SET %f WHERE (%w) ", ModelTraits<Model>::instance().table_name());
     }
 
     std::unique_ptr<SqlTable<Model>> select() {
-        std::string sql = std::string( "SELECT %f FROM %t WHERE %w ");
-        return std::make_unique<SqlTable<Model>>(std::string( "SELECT %f FROM %t WHERE %w "),
+        return std::make_unique<SqlTable<Model>>( "SELECT %f FROM %t WHERE %w ",
                                                  ModelTraits<Model>::instance().table_name());
     }
 
     std::unique_ptr<SqlTable<Model>> remove() {
-        return std::make_unique<SqlTable<Model>>(std::string( "DELETE FROM %t WHERE %w "), ModelTraits<Model>::instance().table_name());
+        return std::make_unique<SqlTable<Model>>("DELETE FROM %t WHERE %w ", ModelTraits<Model>::instance().table_name());
 
     }
 
     std::unique_ptr<SqlTable<Model>> insert() {
-        return std::make_unique<SqlTable<Model>>(std::string( "INSERT INTO %t (%f) values (%v)"),
+        return std::make_unique<SqlTable<Model>>("INSERT INTO %t (%f) values (%v)",
                                           ModelTraits<Model>::instance().table_name());
     }
 private:

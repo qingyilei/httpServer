@@ -49,9 +49,9 @@ public:
         return ss.str();
     }
 
-    static std::string generate_error_response(const std::string &response) {
+    static std::string generate_error_response(int status, const std::string &response) {
         std::stringstream ss;
-        ss << "HTTP/1.1 500 ERROR\r\n"
+        ss << "HTTP/1.1 "<< status <<" ERROR\r\n"
            << "Content-Type: application/json\r\n"
            << "Content-Length: " << boost::json::serialize(response).size() << "\r\n"
            << "\r\n"

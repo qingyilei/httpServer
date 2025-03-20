@@ -10,16 +10,17 @@
 
 class User : public Model<User> {
 public:
-    User(int id, std::string name, std::string email, int age) : id(id), name(std::move(name)), email(std::move(email)),
-                                                                 age(age) {
-        set<int>("id", this->id  );
-        set<std::string>("name", this->name);
-        set<int>("age", this->age       );
-        set<std::string>("email", this->email);
+    User(int id,  std::string name,  std::string email, int age)
+    : id(id),name(std::move(name)), email(std::move(email)),age(age) {
+
+        set("id", id);
+        set("age",age);
+        set<std::string>("name", std::move(name));
+        set<std::string>("email", std::move(email));
     }
 
-    User(int id) : id(id) {
-        set<int>("id", this->id);
+    User(int id) : id(id),age(0) {
+        set<int>("id", std::move(id));
     }
     User() = default;
 
@@ -41,8 +42,6 @@ public:
         };
     }
 
-//    template<typename T>
-//    static void register_field(ModelTraits<User> &traits, const std::string &name, T User::* member);
 };
 
 

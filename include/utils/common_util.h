@@ -10,6 +10,8 @@
 #include <map>
 #include <charconv>
 #include <numeric>
+#include <string_view>
+
 class CommonUtil {
 public:
     template<typename T>
@@ -29,16 +31,16 @@ public:
 
 // string类型特化（直接返回原始字符串）
     template<>
-     std::string get_param<std::string>(const std::multimap<std::string, std::string> &params,
-                                              const std::string &key, std::string default_val) {
+    std::string get_param<std::string>(const std::multimap<std::string, std::string> &params,
+                                       const std::string &key, std::string default_val) {
         auto it = params.find(key);
         return (it != params.end()) ? it->second : std::move(default_val);
     }
 
 // bool类型特化
     template<>
-     bool get_param<bool>(const std::multimap<std::string, std::string> &params,
-                                const std::string &key, bool default_val) {
+    bool get_param<bool>(const std::multimap<std::string, std::string> &params,
+                         const std::string &key, bool default_val) {
         auto it = params.find(key);
         if (it == params.end()) return default_val;
 
@@ -53,8 +55,8 @@ public:
 
 // int类型特化
     template<>
-     int get_param<int>(const std::multimap<std::string, std::string> &params,
-                              const std::string &key, int default_val) {
+    int get_param<int>(const std::multimap<std::string, std::string> &params,
+                       const std::string &key, int default_val) {
         auto it = params.find(key);
         if (it == params.end()) return default_val;
 
@@ -80,7 +82,7 @@ public:
 
 // 字符串特化
     template<>
-     std::vector<std::string> get_all_params<std::string>(
+    std::vector<std::string> get_all_params<std::string>(
             const std::multimap<std::string, std::string> &params, const std::string &key) {
         std::vector<std::string> results;
         auto range = params.equal_range(key);
@@ -92,7 +94,7 @@ public:
 
 // 布尔类型特化
     template<>
-     std::vector<bool> get_all_params<bool>(
+    std::vector<bool> get_all_params<bool>(
             const std::multimap<std::string, std::string> &params, const std::string &key) {
         std::vector<bool> results;
         auto range = params.equal_range(key);
@@ -156,6 +158,10 @@ public:
         }
     }
 
+    static bool contains(const std::string_view &str, const std::string_view &substr) {
+        return str.find(substr) != std::string_view::npos;
+    }
+
     static std::string join_with_delimiter(const std::vector<std::string> &processed, const std::string &delimiter) {
 
         std::string joinLine = std::accumulate(std::ranges::begin(processed),
@@ -166,7 +172,8 @@ public:
         return joinLine;
     }
 
-    static std::string join_with_delimiter(const std::vector<std::string> &processed, std::function<std::string(const std::string&)> fun) {
+    static std::string join_with_delimiter(const std::vector<std::string> &processed,
+                                           std::function<std::string(const std::string &)> fun) {
 
         std::string joinLine = std::accumulate(std::ranges::begin(processed),
                                                std::ranges::end(processed),
@@ -177,4 +184,5 @@ public:
     }
 
 };
+
 #endif //HTTP_SERVER_CONVERT_UTIL_H

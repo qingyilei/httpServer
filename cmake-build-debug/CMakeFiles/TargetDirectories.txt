@@ -1,3 +1,5 @@
 /Users/a1-6/CLionProjects/httpServer/cmake-build-debug/CMakeFiles/httpServer.dir
+/Users/a1-6/CLionProjects/httpServer/cmake-build-debug/CMakeFiles/httpServer_test.dir
+/Users/a1-6/CLionProjects/httpServer/cmake-build-debug/CMakeFiles/test.dir
 /Users/a1-6/CLionProjects/httpServer/cmake-build-debug/CMakeFiles/edit_cache.dir
 /Users/a1-6/CLionProjects/httpServer/cmake-build-debug/CMakeFiles/rebuild_cache.dir

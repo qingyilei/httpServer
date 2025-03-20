@@ -5,6 +5,9 @@
 default_target: all
 .PHONY : default_target
 
+# 添加目录创建指令
+setup: mkdir -p ./uploads
+
 # Allow only one "make -f Makefile2" at a time, but pass parallelism.
 .NOTPARALLEL:
 

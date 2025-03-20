@@ -17,7 +17,9 @@ class SqlPage {
 public:
     SqlPage(std::string &sql_operator, int page, int page_size)
             : sql_operator_(sql_operator), page_(page), page_size_(page_size) {
-        std::cout << "SqlPage init" << std::endl;
+        if (!sql_operator.empty() && CommonUtil::contains(sql_operator, "JOIN")) {
+            source_alias_ = ModelTraits<Model>::instance().table_name() + "_";
+        }
         if (page_ <= 0) {
             page_ = 1;
         }
@@ -28,6 +30,8 @@ public:
         int offset = (page_ - 1) * page_size_;
         this->limit(page_size_);
         this->offset(offset);
+        std::cout << "SqlPage init" << std::endl;
+
     }
 
     ~SqlPage() {
@@ -35,26 +39,26 @@ public:
     }
 
     SqlPage &order_by(std::vector<std::pair<std::string, bool>> &order_by) {
-        orderBy_ = "ORDER BY ";
+        std::ostringstream oss;
+        oss << "ORDER BY ";
         for (size_t i = 0, len = order_by.size(); i < len; ++i) {
             const auto &item = order_by[i];
-            if (i < len - 1) {
-                orderBy_ += item.first + (item.second ? " DESC" : " ASC") + ",";
-            } else {
-                orderBy_ += item.first + (item.second ? " DESC" : " ASC");
-            }
+            oss << get_field(item.first) << (item.second ? " DESC" : " ASC");
+            if (i < len - 1) oss << ",";
         }
+        orderBy_ = oss.str();
         return *this;
     }
 
     SqlPage &order_by() {
-        orderBy_ = "ORDER BY " + ModelTraits<Model>::instance().primary_key() + " DESC";
+        orderBy_ = "ORDER BY " + get_field(ModelTraits<Model>::instance().primary_key()) + " DESC";
         return *this;
     }
 
     std::unique_ptr<SqlExecutor<Model>> operator_sql() {
         std::string countSql(this->sql_operator_);
         CommonUtil::replace_between(countSql, "SELECT", "FROM", " COUNT(*) ");
+        querySql();
         return std::make_unique<SqlExecutor<Model>>(
                 OperatorType::COUNT, page_,
                 page_size_, std::move(countSql), std::move(this->sql_operator_));
@@ -84,8 +88,15 @@ protected:
     }
 
 private:
+    std::string get_field(const std::string &field) {
+        if (!source_alias_.empty() && !CommonUtil::contains(field, ".")) {
+            return source_alias_ + "." + field;
+        }
+        return field;
+    }
 
     std::string sql_operator_;
+    std::string source_alias_;
     int page_;
     int page_size_;
     std::string limit_;

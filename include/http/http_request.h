@@ -11,6 +11,7 @@
 #include <string>
 #include <boost/json.hpp>
 #include <map>
+#include "file_upload.h"
 
 template<typename T>
 struct always_false : std::false_type {
@@ -19,6 +20,13 @@ struct always_false : std::false_type {
 
 
 struct http_request {
+    // 添加文件上传相关字段
+    struct UploadedFile {
+        std::string filename;
+        std::string content_type;
+        size_t size;
+        FileUploader::MappedFile mapping;
+    };
     http_request() = default;
 
     std::string method;
@@ -28,6 +36,7 @@ struct http_request {
     std::multimap<std::string, std::string> params;
     boost::json::value body;
     std::map<std::string, std::string> headers;  // 添加headers属性
+    std::map<std::string, UploadedFile> uploaded_files; // 表单字段名到文件的映射
 
     // 获取 JSON 字段（模板方法）
     template<typename T>

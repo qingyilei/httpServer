@@ -17,22 +17,25 @@ public:
           int create_by,
           std::string create_time) : id(id), order_no(order_no), order_qty(order_qty), unit_price(unit_price),
                                      create_by(create_by), create_time(std::move(create_time)) {
-        set<int>("id", this->id);
-        set<std::string>("create_time", this->create_time);
-        set<int>("order_qty", this->order_qty);
-        set<double>("unit_price", this->unit_price);
-        set<int>("order_no", this->order_no);
-        set<int>("create_by", this->create_by);
+        set("id", id);
+        set("order_qty", order_qty);
+        set("unit_price", unit_price);
+        set("order_no", order_no);
+        set("create_by", std::move(create_by));
+        set<std::string>("create_time", std::move(create_time));
+
 
     }
 
-    explicit Order(int id) : id(id) {
-        set<int>("id", this->id);
+    explicit Order(int id) : id(id),order_no(0) {
+        set<int>("id", std::move(id));
+        set<int>("order_no", 0);
+
     }
 
     Order() = default;
 
-    std::vector<std::pair<MessageLevel,std::string>>  verify() override;
+    std::vector<std::pair<MessageLevel, std::string>> verify() override;
 
     int id;
     int order_no;
@@ -54,8 +57,6 @@ public:
         };
     }
 
-//    template<typename T>
-//    static void register_field(ModelTraits<Order> &traits, const std::string &name, T Order::* member);
 };
 
 

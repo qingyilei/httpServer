@@ -21,6 +21,9 @@ public:
      * @param table
      */
     explicit SqlWhere(std::string &&sql_operator) : sql_operator_(sql_operator) {
+        if (!sql_operator.empty() && CommonUtil::contains(sql_operator, "JOIN")) {
+            source_alias_ = ModelTraits<Model>::instance().table_name() + "_";
+        }
         std::cout << "SqlWhere init" << std::endl;
     }
 
@@ -31,7 +34,7 @@ public:
     template<typename T>
     SqlWhere<Model> &eq(const std::string &field, Model &model_) {
         auto value = ModelTraits<Model>::instance().get_field(field, model_);
-        sql_condition_.push_back(std::format("{} = {}", field, std::any_cast<T>(value)));
+        put_condition(field,std::any_cast<T>(value));
         return *this;
     }
 
@@ -41,7 +44,7 @@ public:
         if (in_condition.empty() || std::all_of(in_condition.begin(), in_condition.end(), ::isspace)) {
             return *this;
         }
-        sql_condition_.push_back(std::format("{} in ({})", field, in_condition));
+        put_in_condition(field,in_condition);
         return *this;
     }
 
@@ -51,7 +54,7 @@ public:
         if (!val.has_value() || std::any_cast<std::string>(val).empty()) {
             return *this;
         }
-        sql_condition_.push_back(std::format("{} like '%{}%'", field, std::any_cast<std::string>(val)));
+        sql_condition_.push_back(std::format("{} like '%{}%'", get_field(field), std::any_cast<std::string>(val)));
         return *this;
     }
 
@@ -60,7 +63,7 @@ public:
         if (!val.has_value() || std::any_cast<std::string>(val).empty()) {
             return *this;
         }
-        sql_condition_.push_back(std::format("{} like '%{}'", field, std::any_cast<std::string>(val)));
+        sql_condition_.push_back(std::format("{} like '%{}'", get_field(field), std::any_cast<std::string>(val)));
         return *this;
     }
 
@@ -69,7 +72,7 @@ public:
         if (!val.has_value() || std::any_cast<std::string>(val).empty()) {
             return *this;
         }
-        sql_condition_.push_back(std::format("{} like '{}%'", field, std::any_cast<std::string>(val)));
+        sql_condition_.push_back(std::format("{} like '{}%'", get_field(field), std::any_cast<std::string>(val)));
         return *this;
     }
 
@@ -78,9 +81,9 @@ public:
         if (condition.empty()) {
             CommonUtil::replace_all(this->sql_operator_, "%w", "1=1");
         } else {
-            CommonUtil::replace_all(this->sql_operator_,"%w",condition);
+            CommonUtil::replace_all(this->sql_operator_, "%w", condition);
         }
-        return std::make_unique<SqlPage<Model>>(this->sql_operator_,page,page_size);
+        return std::make_unique<SqlPage<Model>>(this->sql_operator_, page, page_size);
     }
 
     std::unique_ptr<SqlExecutor<Model>> operator_sql() {
@@ -89,7 +92,7 @@ public:
         if (condition.empty()) {
             CommonUtil::replace_all(this->sql_operator_, "%w", "1=1");
         } else {
-            CommonUtil::replace_all(this->sql_operator_,"%w",condition);
+            CommonUtil::replace_all(this->sql_operator_, "%w", condition);
         }
         CommonUtil::replace_all(this->sql_operator_, "%w", condition);
         return std::make_unique<SqlExecutor<Model>>(
@@ -98,6 +101,28 @@ public:
     }
 
 private:
+
+    std::string get_field(const std::string &field) {
+        return source_alias_.empty() ? field : source_alias_ + "." + field;
+    }
+
+    template<typename T>
+    void put_condition(const std::string &field, T value) {
+        if (this->source_alias_.empty()) {
+            sql_condition_.push_back(std::format("{} = {}", field, value));
+        } else {
+            sql_condition_.push_back(std::format("{} = {}", this->source_alias_ + "." + field, value));
+        }
+    }
+
+    void put_in_condition(const std::string &field,const std::string &value) {
+        if (this->source_alias_.empty()) {
+            sql_condition_.push_back(std::format("{} in ({})", field, value));
+        } else {
+            sql_condition_.push_back(std::format("{} in ({})", this->source_alias_ + "." + field, value));
+        }
+    }
+
     std::string join_conditions(std::vector<std::string> &where_) {
         std::string result;
         for (size_t i = 0; i < where_.size(); ++i) {
@@ -106,8 +131,10 @@ private:
         }
         return result;
     }
+
     std::vector<std::string> sql_condition_;
     std::string sql_operator_;
+    std::string source_alias_;
 };
 
 

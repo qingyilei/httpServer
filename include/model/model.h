@@ -47,8 +47,8 @@ public:
 
     // 字段设置器
     template<typename T>
-    void set(const std::string &field_name, T value) {
-        fields_[field_name] = value;
+    void set(const std::string &field_name, T &&val) {
+        fields_[field_name] = std::forward<T>(val);
     }
 
     virtual std::vector<std::pair<MessageLevel, std::string>> verify() = 0;
@@ -113,15 +113,6 @@ public:
             throw std::invalid_argument("Field not found");
         }
         return fields_.at(field_name);
-    }
-
-    // 关联关系
-    template<typename Related>
-    auto has_many() {
-        return Relation<Derived, Related>(
-                ModelTraits<Derived>::instance().primary_key(),
-                ModelTraits<Related>::foreign_key()
-        );
     }
 
     template<typename T>

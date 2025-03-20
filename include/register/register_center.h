@@ -8,7 +8,7 @@
 class RegisterCenter {
 public:
     static RegisterCenter &instance();
-    void register_handler();
+    static void register_handler();
 private:
     RegisterCenter() = default;
 };
